@@ -1,36 +1,39 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# ✨ Mentor Match 3.0
 
-## Getting Started
+## 🚧 Work In Progress: The Next Generation
 
-First, run the development server:
+This repository houses the source code for **Version 3** of my personal application, **Mentor Match**.
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+This major re-write is focused on building a scalable, high-performance platform using **Next.js**.
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+---
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## 🎯 Project Goals for v3
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+The primary goal of this iteration is to deliver a complete, modern application with a clean, efficient architecture.
 
-## Learn More
+* **Complete Overhaul:** A full redesign and rebuild from the ground up to improve speed and maintainability.
+* **API Development:** Currently focused on building a robust, dedicated **API layer** to handle all data and business logic. This will serve the Next.js frontend.
+* **Modern Stack:** Transitioning to a unified **Next.js** framework to leverage server-side rendering (SSR), static site generation (SSG), and API routes for a superior developer and user experience.
 
-To learn more about Next.js, take a look at the following resources:
+---
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## 🛠️ Technology Stack
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+| Component | Technology | Purpose |
+| :--- | :--- | :--- |
+| **Framework** | **Next.js** | Full-stack application development (Frontend & API) |
+| **Language** | TypeScript | Type safety and better code quality |
+| **API** | Next.js API Routes | Handling data logic and database interactions |
+| **Styling** | [Material UI / styled-components / etc.] | Modern and responsive UI |
+| **Database** | MongoDB, Mongoose | Data persistence |
 
-## Deploy on Vercel
+---
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## 🤝 Contribution
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+As this is a personal project, contributions are generally not accepted, but I welcome feedback and suggestions! Feel free to open an Issue if you spot a bug or have a feature idea.
+
+---
+
+> 💻 **Status:** API development is in active progress. Front-end integration to follow.
