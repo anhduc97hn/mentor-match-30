@@ -5,6 +5,9 @@ import UserProfile from "@/models/UserProfile";
 import { catchAsync, sendResponse, ExtendedNextRequest } from "@/lib/utils/helper"; 
 import { HTTP_STATUS } from "@/lib/constants";
 import { PaginationQuerySchema } from "@/lib/validation/schemas"; 
+import Education from "@/models/Education";
+import Experience from "@/models/Experience";
+import Certification from "@/models/Certification";
 
 const getFeaturedUsersHandler = async (req: ExtendedNextRequest): Promise<NextResponse> => {
     
@@ -26,9 +29,9 @@ const getFeaturedUsersHandler = async (req: ExtendedNextRequest): Promise<NextRe
 
     // 4. Database Query (Filter, Sort, Populate)
     const userProfiles = await UserProfile.find(filterCrireria)
-        .populate("education")
-        .populate("experiences")
-        .populate("certifications")
+        .populate("education", null, Education)
+        .populate("experiences", null, Experience)
+        .populate("certifications", null, Certification)
         // Sorts by sessionCount descending for featured mentors
         .sort({ sessionCount: -1 }) 
         .skip(offset)

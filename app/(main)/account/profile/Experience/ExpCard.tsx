@@ -1,0 +1,146 @@
+'use client'
+
+import React, { useState, Dispatch, SetStateAction, RefObject } from "react";
+import { Card, Typography, IconButton, Menu, MenuItem, CardContent, Grid } from "@mui/material";
+import { fDate } from "@/src/utils/formatTime";
+import MoreVertIcon from "@mui/icons-material/MoreVert";
+import { useDispatch } from "react-redux";
+import { experienceRemove } from "@/src/slices/resourceSlice";
+import { Experience } from "@/src/types/user";
+import { useAppDispatch } from "@/src/appService/hooks";
+// Define the type for the position sub-object
+// interface Position {
+//   title: string;
+//   description: string;
+//   start_date: string;
+//   end_date: string;
+// }
+
+// // Define the type for a single experience object
+// interface Experience {
+//   _id: string;
+//   company: string;
+//   position: Position;
+//   industry: string;
+//   location: string;
+//   url: string;
+//   createdAt: string;
+//   updatedAt: string;
+// }
+
+// Define the types for the component's props
+interface ExpCardProps {
+  exp: Experience;
+  setCurrentExp: Dispatch<SetStateAction<Experience | null>>;
+  expFormRef: RefObject<HTMLDivElement | null>;
+}
+
+function ExpCard({ exp, setCurrentExp, expFormRef }: ExpCardProps) {
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+  const dispatch = useAppDispatch();
+
+  const expId = exp._id;
+  const isMenuOpen = Boolean(anchorEl);
+  const menuId = "primary-card-menu";
+
+  const handleCardOpen = (event: React.MouseEvent<HTMLElement>) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleMenuClose = () => {
+    setAnchorEl(null);
+  };
+
+  const handleEditCard = () => {
+    if ( expFormRef.current) {
+      window.scrollTo({
+        top: expFormRef.current.offsetTop,
+        behavior: "smooth",
+      });
+    }
+    setCurrentExp(exp);
+    handleMenuClose();
+  };
+
+  const handleDeleteCard = (expId: string) => {
+
+      const res = window.confirm("Are you sure you want to delete this information?");
+
+      if (res) {
+        dispatch(experienceRemove(expId));
+      }
+    
+    handleMenuClose();
+  };
+
+  const renderMenu = (
+    <Menu
+      anchorEl={anchorEl}
+      anchorOrigin={{
+        vertical: "bottom",
+        horizontal: "right",
+      }}
+      id={menuId}
+      keepMounted
+      transformOrigin={{
+        vertical: "top",
+        horizontal: "right",
+      }}
+      open={isMenuOpen}
+      onClose={handleMenuClose}
+    >
+      <MenuItem onClick={handleEditCard} sx={{ m: 1 }}>
+        Edit
+      </MenuItem>
+      <MenuItem onClick={() => handleDeleteCard(expId)} sx={{ m: 1 }}>
+        Delete
+      </MenuItem>
+    </Menu>
+  );
+
+  return (
+    <Card>
+      <CardContent>
+        <Grid container justifyContent="space-between" alignItems="center">
+          <Grid>
+            <Typography variant="subtitle1" component="div" color="text.primary">
+              {exp.company}
+            </Typography>
+          </Grid>
+          <Grid>
+            <IconButton onClick={handleCardOpen}>
+              <MoreVertIcon />
+            </IconButton>
+          </Grid>
+        </Grid>
+        <Typography variant="subtitle2" color="text.secondary">
+          {`Job Title: ${exp.position.title}`}
+        </Typography>
+        <Typography variant="subtitle2" color="text.secondary">
+          {`Description: ${exp.position.description}`}
+        </Typography>
+        <Typography variant="subtitle2" color="text.secondary">
+          {`Start date: ${exp.position.start_date}`}
+        </Typography>
+        <Typography variant="subtitle2" color="text.secondary">
+          {`End date: ${exp.position.end_date}`}
+        </Typography>
+        <Typography variant="subtitle2" color="text.secondary">
+          {`Industry: ${exp.industry}`}
+        </Typography>
+        <Typography variant="subtitle2" color="text.secondary">
+          {`Address: ${exp.location}`}
+        </Typography>
+        <Typography variant="subtitle2" color="text.secondary" gutterBottom>
+          {`Website: ${exp.url}`}
+        </Typography>
+        <Typography variant="caption" color="text.secondary">
+          {exp.updatedAt !== exp.createdAt ? `Edited on ${fDate(exp.updatedAt)}` : `Created on ${fDate(exp.createdAt)}`}
+        </Typography>
+      </CardContent>
+      {renderMenu}
+    </Card>
+  );
+}
+
+export default ExpCard;

@@ -11,6 +11,9 @@ import { HTTP_STATUS, ERROR_TYPES } from "@/lib/constants";
 // import { GetSingleUserParamsSchema, GetSingleUserParams } from "@/lib/validation/schemas"; 
 import { z } from "zod";
 import { ObjectIdParamSchema } from "@/lib/validation/schemas";
+import Education from "@/models/Education";
+import Experience from "@/models/Experience";
+import Certification from "@/models/Certification";
 
 // Define the handler logic, wrapped by catchAsync
 // P is the generic type for the context.params object, defined by the Zod schema
@@ -21,15 +24,16 @@ const getSingleUserHandler = async (
     
     // 1. Validate Dynamic Parameter (context.params)
     // Throws ZodError/AppError on validation failure (invalid ObjectId format)
-    const validatedParams = await ObjectIdParamSchema.parse(context.params);
+    const params = await context.params;
+    const validatedParams = ObjectIdParamSchema.parse(params);
     const { id } = validatedParams;
 
     // 2. Business Logic (Original userProfile.controller.js logic)
     //
     const userProfile = await UserProfile.findById(id)
-        .populate("education")
-        .populate("experiences")
-        .populate("certifications");
+        .populate("education", null, Education)
+        .populate("experiences", null, Experience)
+        .populate("certifications", null, Certification);
         
     // 3. Handle 404 Not Found
     if (!userProfile) {

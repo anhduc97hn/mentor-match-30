@@ -125,3 +125,53 @@ export const GetSessionsQuerySchema = PaginationQuerySchema.extend({
   // Add the required 'status' field
   status: UpdateSessionStatusSchema,
 });
+
+export const GetUsersQuerySchema = z
+  .preprocess(
+    (data: any) => {
+      // 1. Convert to a standard object if not already
+      const processed = { ...data };
+
+      // 2. Define the keys that might be wrapped in filter[...]
+      const filterKeys = ["searchQuery", "company", "position", "city", "sortBy"];
+
+      filterKeys.forEach((key) => {
+        const bracketKey = `filter[${key}]`;
+
+        // If the bracketed key exists, map it to the clean key
+        if (processed[bracketKey]) {
+          processed[key] = processed[bracketKey];
+        }
+
+        // Cleanup: Treat empty strings as undefined so .optional() works correctly
+        if (processed[key] === "") {
+          processed[key] = undefined;
+        }
+      });
+
+      return processed;
+    },
+    z.object({
+      // page and limit are optional query strings, preprocessed to ensure they are integers
+      page: z.preprocess((val) => (val ? parseInt(val as string, 10) : 1), z.number().int().min(1).default(1)),
+      limit: z.preprocess((val) => (val ? parseInt(val as string, 10) : 10), z.number().int().min(1).default(10)),
+      searchQuery: z.string().optional(),
+      company: z.string().optional(),
+      position: z.string().optional(),
+      city: z.string().optional(),
+      sortBy: z.enum(["sessionDesc", "newest", "reviewDesc"]).optional(),
+    })
+  )
+  .transform((data) => {
+    return {
+      page: data.page,
+      limit: data.limit,
+      filter: {
+        searchQuery: data.searchQuery,
+        company: data.company,
+        position: data.position,
+        city: data.city,
+        sortBy: data.sortBy,
+      },
+    };
+  });

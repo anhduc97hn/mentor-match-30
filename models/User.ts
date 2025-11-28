@@ -1,4 +1,3 @@
-import 'dotenv/config';
 import mongoose, { Schema, Document, Model, Types } from 'mongoose';
 import jwt from 'jsonwebtoken';
 
@@ -59,5 +58,5 @@ userSchema.methods.generateResetToken = async function (this: IUser & IUserMetho
   return resetToken;
 };
 
-const User = mongoose.model<IUser, UserModelType>("User", userSchema);
+const User = mongoose.models.User || mongoose.model<IUser, UserModelType>("User", userSchema);
 export default User;
