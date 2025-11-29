@@ -4,7 +4,7 @@ import { z } from "zod";
 import { google } from "googleapis";
 import Session from "@/models/Session"; 
 import UserProfile from "@/models/UserProfile";
-import { AppError, catchAsync, sendResponse, ExtendedNextRequest } from "@/lib/utils/helper"; 
+import { AppError, catchAsync, sendResponse, ExtendedNextRequest, AppRouterContext } from "@/lib/utils/helper"; 
 import { HTTP_STATUS, ERROR_TYPES } from "@/lib/constants";
 import {  UpdateSessionStatusSchema,  ObjectIdParamSchema } from "@/lib/validation/schemas"; 
 
@@ -42,7 +42,7 @@ const calculateSessionCount = async (userProfileId: string) => {
 
 const reactSessionRequestHandler = async (
     req: ExtendedNextRequest,
-    context: RouteContext<'/sessions/[id]'> 
+    context: AppRouterContext<{id: string}>
 ): Promise<NextResponse> => {
     
     // 1. Authentication Check & User ID Retrieval
@@ -52,7 +52,8 @@ const reactSessionRequestHandler = async (
     }
     
     // 2. Validate Dynamic Parameter (sessionId)
-    const validatedParams = ObjectIdParamSchema.parse(context.params);
+    const params = await context.params
+    const validatedParams = ObjectIdParamSchema.parse(params);
     const { id } = validatedParams;
     
     // 3. Validate Body (status)

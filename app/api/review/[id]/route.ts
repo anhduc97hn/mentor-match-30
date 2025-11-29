@@ -1,7 +1,7 @@
 // app/api/reviews/[reviewId]/route.ts
 import { NextResponse } from "next/server";
 import Review from "@/models/Review"; // Assuming model is imported
-import { AppError, catchAsync, sendResponse, ExtendedNextRequest } from "@/lib/utils/helper"; 
+import { AppError, catchAsync, sendResponse, ExtendedNextRequest, AppRouterContext } from "@/lib/utils/helper"; 
 import { HTTP_STATUS, ERROR_TYPES } from "@/lib/constants";
 import { ObjectIdParamSchema } from "@/lib/validation/schemas"; 
 import { z } from "zod";
@@ -10,7 +10,7 @@ import { z } from "zod";
 // P is the generic type for the context.params object
 const getSingleReviewHandler = async (
     req: ExtendedNextRequest,
-    context: RouteContext<'/reviews/[id]'> 
+    context: AppRouterContext<{id: string}>
 ): Promise<NextResponse> => {
     
     // 1. Authentication Check (Injected by Middleware)
@@ -22,7 +22,8 @@ const getSingleReviewHandler = async (
 
     // 2. Validate Dynamic Parameter (reviewId)
     // Throws ZodError/AppError on validation failure (invalid ObjectId format)
-    const validatedParams = ObjectIdParamSchema.parse(context.params);
+    const params = await context.params;
+    const validatedParams = ObjectIdParamSchema.parse(params);
     const { id } = validatedParams;
 
     // 3. Business Logic (Original review.controller.js logic)

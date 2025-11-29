@@ -6,7 +6,7 @@
 
 import { NextResponse } from "next/server";
 import UserProfile from "@/models/UserProfile";
-import { AppError, catchAsync, sendResponse, ExtendedNextRequest } from "@/lib/utils/helper"; 
+import { AppError, catchAsync, sendResponse, ExtendedNextRequest, AppRouterContext } from "@/lib/utils/helper"; 
 import { HTTP_STATUS, ERROR_TYPES } from "@/lib/constants";
 // import { GetSingleUserParamsSchema, GetSingleUserParams } from "@/lib/validation/schemas"; 
 import { z } from "zod";
@@ -19,7 +19,7 @@ import Certification from "@/models/Certification";
 // P is the generic type for the context.params object, defined by the Zod schema
 const getSingleUserHandler = async (
     req: ExtendedNextRequest,
-    context: RouteContext<'/userprofiles/[id]'> 
+    context: AppRouterContext<{id: string}>
 ): Promise<NextResponse> => {
     
     // 1. Validate Dynamic Parameter (context.params)

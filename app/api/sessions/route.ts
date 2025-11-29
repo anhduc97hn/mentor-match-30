@@ -4,7 +4,7 @@ import UserProfile from "@/models/UserProfile";
 import Session from "@/models/Session";
 import { AppError, catchAsync, sendResponse, ExtendedNextRequest } from "@/lib/utils/helper"; 
 import { HTTP_STATUS, ERROR_TYPES } from "@/lib/constants";
-import { GetSessionsQuerySchema, GetSessionsQuery } from "@/lib/validation/schemas"; 
+import { GetSessionsQuerySchema } from "@/lib/validation/schemas"; 
 
 const getSessionListHandler = async (req: ExtendedNextRequest): Promise<NextResponse> => {
     

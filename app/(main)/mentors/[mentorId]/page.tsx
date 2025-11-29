@@ -4,9 +4,7 @@ import { AsyncMentorContent } from "./AsyncMentorContent";
 import './MentorPage.css';
 
 interface MentorRouteParams {
-  params: {
-    mentorId: string;
-  };
+  params: Promise<{mentorId: string}>
 }
 
 export default async function MentorPageRSC({ params }: MentorRouteParams) {

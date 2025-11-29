@@ -58,15 +58,15 @@ export const sendResponse = (status: number, success: boolean, data: ResponseDat
 
 // 3. ASYNC ERROR WRAPPER (Web Standard API)
 
-type AppRouterContext<P = Record<string, string>> = { params: P };
+export type AppRouterContext<P = any> = { params: Promise<P> };
 
-type RouteHandlerLogic<P = Record<string, string>> = (
+export type RouteHandlerLogic<P = any> = (
   req: ExtendedNextRequest,
   context: AppRouterContext<P> // Context added here
 ) => Promise<NextResponse>;
 
 export const catchAsync =
-  <P = Record<string, string>>(func: RouteHandlerLogic<P>) =>
+  <P = any>(func: RouteHandlerLogic<P>) =>
   async (
     req: ExtendedNextRequest,
     context: AppRouterContext<P> // Context accepted here

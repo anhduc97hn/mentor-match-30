@@ -1,6 +1,6 @@
 "use client"
 
-import React, { useState } from 'react';
+import React, { use, useState } from 'react';
 import { FormProvider, FTextField } from "@/src/components/form";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
@@ -25,9 +25,11 @@ const ResetPasswordSchema = Yup.object().shape({
 type ResetPasswordFormInputs = Yup.InferType<typeof ResetPasswordSchema>;
 
 // Define a type for the URL parameters from React Router
-type ResetRouteParams = {
-  resetToken: string;
-};
+// type ResetRouteParams = {
+//   params: {
+//     resetToken: string 
+//   }
+// };
 
 // Strongly type the default values
 const defaultValues: ResetPasswordFormInputs = {
@@ -36,8 +38,9 @@ const defaultValues: ResetPasswordFormInputs = {
 };
 
 // Define the component as a React Functional Component (React.FC)
-const ResetPasswordPage: React.FC<ResetRouteParams> = ({ resetToken}) => {
+const ResetPasswordPage = ({ params }: { params: Promise<{ resetToken: string }> }) => {
   // const navigate = useNavigate();
+    const { resetToken } = use(params);
   const router = useRouter();
   const auth = useAuth();
   const [showPassword, setShowPassword] = useState<boolean>(false);

@@ -1,13 +1,13 @@
 import { NextResponse } from "next/server";
 import { z, ZodObject } from "zod";
-import { AppError, ExtendedNextRequest, sendResponse } from "./helper";
+import { AppError, ExtendedNextRequest, RouteHandlerLogic, sendResponse } from "./helper";
 import { HTTP_STATUS, ERROR_TYPES } from "../constants";
 import UserProfile from "@/models/UserProfile"; 
 
 type NextFunction = (err?: any) => void;
 // Middleware now takes req and next, and returns a promise of a Response or void
 type Middleware = (req: ExtendedNextRequest, next: NextFunction) => Promise<NextResponse | void>;
-type RouteHandlerLogic = (req: ExtendedNextRequest, context: RouteContext) => Promise<NextResponse>;
+// type RouteHandlerLogic = (req: ExtendedNextRequest, context: RouteContext) => Promise<NextResponse>;
 
 // Zod Validation Middleware ---
 interface ValidationConfig {

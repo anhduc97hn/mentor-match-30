@@ -3,18 +3,18 @@ import { NextResponse } from "next/server";
 import { z } from "zod";
 import Session from "@/models/Session";
 import UserProfile from "@/models/UserProfile";
-import { AppError, catchAsync, sendResponse, ExtendedNextRequest } from "@/lib/utils/helper"; 
+import { AppError, catchAsync, sendResponse, ExtendedNextRequest, AppRouterContext } from "@/lib/utils/helper"; 
 import { HTTP_STATUS, ERROR_TYPES } from "@/lib/constants";
 import { chainMiddleware, customerAccessRequired, validate } from "@/lib/utils/api-middleware";
 import { SendSessionRequestSchema, ObjectIdParamSchema } from "@/lib/validation/schemas"; 
 
 const sendSessionRequestHandler = async (
     req: ExtendedNextRequest,
-    context: RouteContext<'/sessions/request/[id]'>
+    context: AppRouterContext<{id: string}>
 ): Promise<NextResponse> => {
     
     // 1. Inputs are guaranteed by the chain:
-    const { id } = context.params; // Param validated in catchAsync wrapper
+    const { id } = await context.params; // Param validated in catchAsync wrapper
     const validatedBody = req.validatedBody; // Body validated by middleware
 
     const { topic, problem, startDateTime, endDateTime } = validatedBody;

@@ -4,7 +4,7 @@ import { z } from "zod";
 import Session from "@/models/Session";
 import Review from "@/models/Review";
 import UserProfile from "@/models/UserProfile";
-import { AppError, catchAsync, sendResponse, ExtendedNextRequest } from "@/lib/utils/helper"; 
+import { AppError, catchAsync, sendResponse, ExtendedNextRequest, AppRouterContext } from "@/lib/utils/helper"; 
 import { HTTP_STATUS, ERROR_TYPES } from "@/lib/constants";
 import { chainMiddleware, customerAccessRequired, validate } from "@/lib/utils/api-middleware";
 import { ObjectIdParamSchema, CreateReviewSchema } from "@/lib/validation/schemas"; 
@@ -46,14 +46,16 @@ const calculateAverageRating = async (userProfileId: string) => {
     });
 };
 
-
+type SessionReviewParams = { 
+  id: string 
+};
 const createNewReviewHandler = async (
     req: ExtendedNextRequest,
-    context: RouteContext<'/ssessions/[id]/review'> 
+    context: AppRouterContext<SessionReviewParams>
 ): Promise<NextResponse> => {
     
     // 1. Inputs are guaranteed by chainMiddleware:
-    const validatedParams = context.params;
+    const validatedParams = await context.params;
     const validatedBody = req.validatedBody;
 
     const { id } = validatedParams;

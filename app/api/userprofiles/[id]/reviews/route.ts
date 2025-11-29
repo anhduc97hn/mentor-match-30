@@ -10,7 +10,7 @@ import { z } from "zod";
 import UserProfile from "@/models/UserProfile";
 import Session from "@/models/Session";
 import Review from "@/models/Review";
-import { AppError, catchAsync, sendResponse, ExtendedNextRequest } from "@/lib/utils/helper"; 
+import { AppError, catchAsync, sendResponse, ExtendedNextRequest, AppRouterContext } from "@/lib/utils/helper"; 
 import { HTTP_STATUS, ERROR_TYPES } from "@/lib/constants";
 import { ObjectIdParamSchema, PaginationQuerySchema } from "@/lib/validation/schemas";
 // import { GetSingleUserParamsSchema, PaginationQuerySchema, GetSingleUserParams, PaginationQuery } from "@/lib/validation/schemas"; 
@@ -18,11 +18,12 @@ import { ObjectIdParamSchema, PaginationQuerySchema } from "@/lib/validation/sch
 // Define the handler logic, wrapped by catchAsync
 const getReviewsHandler = async (
     req: ExtendedNextRequest,
-    context: RouteContext<'/userprofiles/[id]/reviews'>
+    context: AppRouterContext<{id: string}>
 ): Promise<NextResponse> => {
     
     // 1. Validate Dynamic Parameter (userProfileId)
-    const validatedParams = ObjectIdParamSchema.parse(context.params);
+    const params = await context.params;
+    const validatedParams = ObjectIdParamSchema.parse(params);
     const { id } = validatedParams;
 
     // 2. Validate Query Parameters (page, limit)
