@@ -96,7 +96,7 @@ export async function getMentorProfileServer(mentorId: string): Promise<IMentorP
     // const response = await apiService.get(`/userprofiles/${mentorId}`);
     // const userProfile = response.data;
     await dbConnect();
-    const rawUserProfile = await UserProfileModel.findById(mentorId).populate("education").populate("experiences").populate("certifications").lean();
+    const rawUserProfile = await UserProfileModel.findById(mentorId).populate("education", null, Education).populate("experiences", null, Experience).populate("certifications", null, Certification).lean();
 
     const userProfile = JSON.parse(JSON.stringify(rawUserProfile));
     return userProfile;
