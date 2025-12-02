@@ -41,7 +41,7 @@ userSchema.methods.generateToken = async function (this: IUser & IUserMethods): 
     { _id: this._id, email: this.email },
     JWT_SECRET_KEY,
     {
-      expiresIn: "1d",
+      expiresIn: "7d",
     }
   );
   return accessToken;
@@ -52,7 +52,7 @@ userSchema.methods.generateResetToken = async function (this: IUser & IUserMetho
     { _id: this._id, email: this.email },
     JWT_RESET_PASSWORD,
     {
-      expiresIn: "10m",
+      expiresIn: "7d",
     }
   );
   return resetToken;

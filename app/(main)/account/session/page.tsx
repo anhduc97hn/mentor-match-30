@@ -63,9 +63,7 @@ function UserSession() {
 
 
   return (
-    <ProtectedPage>
-      <DashboardTabs tabs={tabsWithProps} title={title} defaultTab="requests" />;
-    </ProtectedPage>
+      <DashboardTabs tabs={tabsWithProps} title={title} defaultTab="requests" />
   );
 }
 

@@ -85,7 +85,6 @@ export default function SessionPage ({ params }: { params: Promise<{ mentorId: s
   };
 
   return (
-    <ProtectedPage>
     <Container maxWidth={false} sx={{ bgcolor: 'primary.light', p: 5 }}>
       <Card sx={{ p: 5, mx: 'auto', maxWidth: '800px' }}>
         <FormProvider methods={methods} onSubmit={handleSubmit(onSubmit)}>
@@ -124,6 +123,5 @@ export default function SessionPage ({ params }: { params: Promise<{ mentorId: s
         </FormProvider>
       </Card>
     </Container>
-    </ProtectedPage>
   );
 };

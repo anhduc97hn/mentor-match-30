@@ -38,21 +38,21 @@ const UserProfile: React.FC = () => {
   const isMentor = auth?.userProfile?.isMentor || null;
   const userProfile = auth?.userProfile || null; 
   return isMentor ? (
-    <ProtectedPage>
+   
       <DashboardTabs
         tabs={ACCOUNT_TABS}
         title={title}
         defaultTab="General"
       />
-    </ProtectedPage>
+
   ) : (
-    <ProtectedPage>
+  
       <DashboardTabs
         tabs={[ACCOUNT_TABS[0]]} // Only show the "General" tab for non-mentors
         title={title}
         defaultTab="General"
       />
-    </ProtectedPage>
+
   );
 };
 

@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { FCheckbox, FormProvider, FTextField } from "@/src/components/form";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
@@ -13,6 +13,7 @@ import useAuth from "@/src/hooks/useAuth";
 import { GoogleLogin, CredentialResponse } from "@react-oauth/google";
 import NextLink from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
+import { toast } from "react-toastify";
 
 const LoginSchema = Yup.object().shape({
   email: Yup.string().email("Invalid email").required("Email is required"),
@@ -45,12 +46,12 @@ const LoginPage = () => {
     formState: { errors, isSubmitting },
   } = methods;
 
-  const from = searchParams?.get("redirect") || "/";
+  const from = searchParams.get("from") || "/";
   const onSubmit = async (data: any) => {
-    const { email, password } = data;
+    const { email, password, remember } = data;
 
     try {
-      await auth.login({ email, password }, () => {
+      await auth.login({ email, password, remember }, () => {
         router.push(from);
       });
     } catch (error: any) {
@@ -80,6 +81,15 @@ const LoginPage = () => {
   const handleGoogleClick = () => {
     router.prefetch(from)
   }
+
+  useEffect(() => {
+    const reason = searchParams.get("reason");
+    if (reason == "auth_required") {
+      toast.warning("You need to log in to access that page.");
+    } else if (reason == "session_expired") {
+      toast.warning("Your session has expired. Please log in again.");
+    }
+  }, [searchParams]);
 
   return (
     <Container maxWidth="xs">
