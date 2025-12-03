@@ -6,7 +6,6 @@ import MainFooter from './MainFooter';
 import { Box, Stack } from "@mui/material";
 import AlertMsg from "../components/AlertMsg";
 import { UserProfile } from '../types/user';
-import AuthSync from '../components/AuthSync';
 
 interface MainLayoutProps {
   children: React.ReactNode;
