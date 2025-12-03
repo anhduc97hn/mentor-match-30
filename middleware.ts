@@ -27,8 +27,14 @@ function shouldProtectApi(pathname: string, method: string): boolean {
 export default function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
   const method = request.method;
-const token = request.cookies.get("accessToken")?.value;
+  const token = request.cookies.get("accessToken")?.value;
 
+  if (!token) {
+    const loginUrl = new URL("/login", request.url);
+    loginUrl.searchParams.set("from", pathname);
+    loginUrl.searchParams.set("reason", "auth_required");
+    return NextResponse.redirect(loginUrl);
+  }
   // API ROUTES (Prioritize Headers)
   if (pathname.startsWith("/api")) {
     if (!shouldProtectApi(pathname, method)) {
@@ -48,19 +54,12 @@ const token = request.cookies.get("accessToken")?.value;
       return sendResponse(status, false, null, { message: errorType }, message);
     }
   }
-  
-  if (!token) {
-    const loginUrl = new URL("/login", request.url);
-    loginUrl.searchParams.set("from", pathname);
-    loginUrl.searchParams.set("reason", "auth_required")
-    return NextResponse.redirect(loginUrl);
-  }
 
   return NextResponse.next();
 }
 
 export const config = {
-  runtime: 'nodejs',
+  runtime: "nodejs",
   matcher: [
     "/api/userprofiles/me", 
     "/api/certifications/:path*", 

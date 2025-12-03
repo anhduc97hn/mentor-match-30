@@ -7,15 +7,8 @@ export interface DecodedToken {
   email: string;
 }
 
-export const verifyToken = (tokenString: string | undefined): DecodedToken => {
+export const verifyToken = (tokenString: string): DecodedToken => {
   const JWT_SECRET_KEY = process.env.JWT_SECRET_KEY as string;
-  // if (!tokenString || !tokenString.startsWith('Bearer ')) {
-  //     throw new AppError(HTTP_STATUS.UNAUTHORIZED, "Login required", ERROR_TYPES.UNAUTHORIZED);
-  // }
-  if (!tokenString) {
-    throw new AppError(HTTP_STATUS.UNAUTHORIZED, "Login required", ERROR_TYPES.UNAUTHORIZED);
-  }
-  // const token = tokenString.replace("Bearer ", "");
   try {
     return jwt.verify(tokenString, JWT_SECRET_KEY) as DecodedToken;
   } catch (err: any) {

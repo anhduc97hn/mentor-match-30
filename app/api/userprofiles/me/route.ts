@@ -4,6 +4,7 @@ import UserProfile from "@/models/UserProfile";
 import { AppError, catchAsync, sendResponse, ExtendedNextRequest } from "@/lib/utils/helper"; 
 import { HTTP_STATUS, ERROR_TYPES } from "@/lib/constants";
 import { UpdateUserProfileSchema } from "@/lib/validation/schemas";
+import User from "@/models/User";
 
 // Define the handler logic, wrapped by catchAsync
 const getCurrentUserHandler = async (req: ExtendedNextRequest): Promise<NextResponse> => {
@@ -18,7 +19,7 @@ const getCurrentUserHandler = async (req: ExtendedNextRequest): Promise<NextResp
     }
     
     // 2. Business Logic (Original userProfile.controller.js logic)
-    const userProfile = await UserProfile.findOne({ userId: userId }).populate("userId");
+    const userProfile = await UserProfile.findOne({ userId: userId }).populate("userId", null, User);
 
     // 3. Handle 404 Not Found
     if (!userProfile) {

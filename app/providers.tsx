@@ -8,10 +8,20 @@ import { DatePicker } from "@/src/contexts/DatePicker";
 import { GoogleOAuthProvider } from "@react-oauth/google";
 import { useRef } from "react";
 import { AppRouterCacheProvider } from "@mui/material-nextjs/v15-appRouter"
+import { UserProfile } from "@/src/types/user";
 
 const clientId = process.env.NEXT_PUBLIC_CLIENT_ID as string;
 
-export default function Providers({ children }: { children: React.ReactNode }) {
+interface ProvidersProps {
+  children: React.ReactNode;
+  initialAuthState:{
+    userProfile: UserProfile | null;
+    isAuthenticated: boolean;
+   isInitialized: boolean
+  }
+}
+
+export default function Providers({ children, initialAuthState }: ProvidersProps) {
   
   const storeRef = useRef<AppStore | null>(null);
 
@@ -24,7 +34,7 @@ export default function Providers({ children }: { children: React.ReactNode }) {
   return (
     <AppRouterCacheProvider options={{ enableCssLayer: true }}>
     <ReduxProvider store={storeRef.current}>
-      <AuthProvider>
+      <AuthProvider initialAuthState={initialAuthState}>
         <GoogleOAuthProvider clientId={clientId}>
           <ThemeProvider>
             <DatePicker>

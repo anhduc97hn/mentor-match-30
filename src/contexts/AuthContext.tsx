@@ -1,6 +1,6 @@
 "use client";
 
-import { createContext, useReducer, useEffect, ReactNode } from "react";
+import { createContext, useReducer, useEffect, ReactNode, Dispatch } from "react";
 import apiService from "../appService/apiService";
 import { useSelector } from "react-redux";
 import { isValidToken } from "../utils/jwt";
@@ -16,7 +16,7 @@ interface AuthState {
 }
 
 interface AuthContextType extends AuthState {
-  login: (credentials: { email: string; password: string, remember: boolean }, callback: () => void) => Promise<void>;
+  login: (credentials: { email: string; password: string; remember: boolean }, callback: () => void) => Promise<void>;
   loginWithGoogle: (idToken: string, callback: () => void) => Promise<void>;
   register: (data: { name: string; email: string; password: string; isMentor: boolean }, callback: () => void) => Promise<void>;
   logout: (callback: () => void) => Promise<void>;
@@ -41,11 +41,11 @@ const initialState: AuthState = {
   userProfile: null,
 };
 
-const INITIALIZE = "AUTH.INITIALIZE";
-const LOGIN_SUCCESS = "AUTH.LOGIN_SUCCESS";
-const REGISTER_SUCCESS = "AUTH.REGISTER_SUCCESS";
-const LOGOUT = "AUTH.LOGOUT";
-const UPDATE_PROFILE = "AUTH.UPDATE_PROFILE";
+export const INITIALIZE = "AUTH.INITIALIZE";
+export const LOGIN_SUCCESS = "AUTH.LOGIN_SUCCESS";
+export const REGISTER_SUCCESS = "AUTH.REGISTER_SUCCESS";
+export const LOGOUT = "AUTH.LOGOUT";
+export const UPDATE_PROFILE = "AUTH.UPDATE_PROFILE";
 
 const reducer = (state: AuthState, action: AuthAction): AuthState => {
   switch (action.type) {
@@ -106,8 +106,8 @@ const setSession = (accessToken: string | null, isPersistent: boolean = false): 
     // window.localStorage.setItem("accessToken", accessToken);
     // apiService.defaults.headers.common.Authorization = `Bearer ${accessToken}`;
     const cookieOptions = {
-        path: "/",
-        expires: isPersistent ? 7 : 1 // 7 days vs 1 day
+      path: "/",
+      expires: isPersistent ? 7 : 1, // 7 days vs 1 day
     };
     Cookies.set("accessToken", accessToken, cookieOptions);
   } else {
@@ -129,72 +129,35 @@ const AuthContext = createContext<AuthContextType>({
 
 interface AuthProviderProps {
   children: ReactNode;
+  initialAuthState: {
+    isAuthenticated: boolean;
+    isInitialized: boolean;
+    userProfile: UserProfile | null;
+  };
 }
 
-function AuthProvider({ children }: AuthProviderProps) {
-  const [state, dispatch] = useReducer(reducer, initialState);
+function AuthProvider({ children, initialAuthState }: AuthProviderProps) {
+  const [state, dispatch] = useReducer(reducer, initialAuthState);
   const updatedProfile = useAppSelector((state) => state.userProfile.updatedProfile);
-
-  useEffect(() => {
-    const initialize = async (): Promise<void> => {
-      try {
-        // const accessToken = window.localStorage.getItem("accessToken");
-        const accessToken = Cookies.get("accessToken");
-        if (accessToken && isValidToken(accessToken)) {
-          debugger;
-          setSession(accessToken);
-
-          const response = await apiService.get("/userprofiles/me");
-          const userProfile: UserProfile = response.data;
-
-          dispatch({
-            type: INITIALIZE,
-            payload: { isAuthenticated: true, userProfile },
-          });
-        } else {
-          setSession(null);
-          dispatch({
-            type: INITIALIZE,
-            payload: { isAuthenticated: false, userProfile: null },
-          });
-        }
-      } catch (err: any) {
-        toast.error(err.errors.message)
-        console.error(err);
-        setSession(null);
-        dispatch({
-          type: INITIALIZE,
-          payload: {
-            isAuthenticated: false,
-            userProfile: null,
-          },
-        });
-      }
-    };
-
-    initialize();
-  }, []);
 
   useEffect(() => {
     if (updatedProfile) dispatch({ type: UPDATE_PROFILE, payload: updatedProfile });
   }, [updatedProfile]);
 
-  const login = async ({ email, password, remember }: { email: string; password: string, remember: boolean }, callback: () => void): Promise<void> => {
+  const login = async ({ email, password, remember }: { email: string; password: string; remember: boolean }, callback: () => void): Promise<void> => {
     try {
       const response = await apiService.post("/auth/login", { email, password });
       const { userProfile, accessToken } = response.data;
-  
-      setSession(accessToken,remember);
+
+      setSession(accessToken, remember);
       dispatch({
         type: LOGIN_SUCCESS,
         payload: { userProfile },
       });
       callback();
-
     } catch (err: any) {
-toast.error(err.errors.message)
+      toast.error(err.errors.message);
     }
-    
   };
 
   const loginWithGoogle = async (idToken: string, callback: () => void): Promise<void> => {
