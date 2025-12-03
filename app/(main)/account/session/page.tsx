@@ -9,7 +9,6 @@ import SessionReviewed from './Session/SessionReviewed';
 import SessionUpcoming from './Session/SessionUpcoming';
 import SessionDeclined from './Session/SessionDeclined';
 import { UserProfile } from '@/src/types/user';
-import ProtectedPage from '@/src/components/withAuth';
 import useAuth from '@/src/hooks/useAuth';
 
 // interface Tab {

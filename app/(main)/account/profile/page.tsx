@@ -6,7 +6,6 @@ import AccountGeneral from "./AccountGeneral";
 import AccountEducation from "./Education/AccountEducation";
 import AccountExperiences from "./Experience/AccountExperiences";
 import AccountCertifications from "./Certification/AccountCertifications";
-import ProtectedPage from "@/src/components/withAuth";
 import useAuth from "@/src/hooks/useAuth";
 
 // --- Component ---
