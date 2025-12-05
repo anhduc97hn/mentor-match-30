@@ -12,6 +12,7 @@ import { AppError, catchAsync, sendResponse, ExtendedNextRequest } from "@/lib/u
 import { HTTP_STATUS, ERROR_TYPES } from "@/lib/constants";
 // Zod schema for input validation
 import { SignUpSchema } from "@/lib/validation/schemas"; 
+import { revalidateTag } from "next/cache";
 
 // Define the handler logic, wrapped by catchAsync
 const signupHandler = async (req: ExtendedNextRequest): Promise<NextResponse> => {
@@ -41,6 +42,8 @@ const signupHandler = async (req: ExtendedNextRequest): Promise<NextResponse> =>
         password: hashedPassword,
     });
     const accessToken = await user.generateToken();
+
+    if (isMentor) revalidateTag("mentors");
 
     // Create a new record in UserProfile collection
     const userProfile = await UserProfile.create({

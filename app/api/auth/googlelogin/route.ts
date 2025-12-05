@@ -6,6 +6,7 @@ import UserProfile from "@/models/UserProfile";
 // Utilities for error handling, response, and constants
 import { AppError, catchAsync, sendResponse, ExtendedNextRequest } from "@/lib/utils/helper"; 
 import { HTTP_STATUS, ERROR_TYPES } from "@/lib/constants";
+import { revalidateTag } from "next/cache";
 
 // Environment variables used for Google OAuth and JWT
 const CLIENT_ID = process.env.CLIENT_ID as string;
@@ -73,6 +74,8 @@ const googleLoginHandler = async (req: ExtendedNextRequest): Promise<NextRespons
 
         await userProfile.populate("userId"); // Populate the linked User data
 
+        revalidateTag(`user-profile-${userProfile.userId._id}`)
+
         // 3. Return Success Response for NEW user
         return sendResponse(
             HTTP_STATUS.OK,
@@ -86,6 +89,8 @@ const googleLoginHandler = async (req: ExtendedNextRequest): Promise<NextRespons
     // B. User exists: Log in
     const accessToken = await existingUser.generateToken();
     const userProfile = await UserProfile.findOne({ userId: existingUser._id }).populate("userId");
+
+    revalidateTag(`user-profile-${userProfile.userId._id}`)
 
     // 4. Return Success Response for EXISTING user
     return sendResponse(

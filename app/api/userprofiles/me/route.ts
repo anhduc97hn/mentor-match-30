@@ -5,6 +5,7 @@ import { AppError, catchAsync, sendResponse, ExtendedNextRequest } from "@/lib/u
 import { HTTP_STATUS, ERROR_TYPES } from "@/lib/constants";
 import { UpdateUserProfileSchema } from "@/lib/validation/schemas";
 import User from "@/models/User";
+import { revalidateTag } from "next/cache";
 
 // Define the handler logic, wrapped by catchAsync
 const getCurrentUserHandler = async (req: ExtendedNextRequest): Promise<NextResponse> => {
@@ -67,6 +68,8 @@ const updateProfileHandler = async (req: ExtendedNextRequest): Promise<NextRespo
     
     // Save the updated profile
     await userProfile.save();
+
+    revalidateTag(`user-profile-${userId}`)
 
     // 6. Return Success Response
     return sendResponse(

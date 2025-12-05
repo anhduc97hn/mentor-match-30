@@ -1,4 +1,5 @@
 import { Box, Button, Container, Stack, Typography } from "@mui/material";
+import Image from "next/image";
 import Link from "next/link";
 
 export const HeroSection = () => (
@@ -30,8 +31,8 @@ export const HeroSection = () => (
           ))}
         </Stack>
       </Box>
-      <Box sx={{ width: "45%", display: { xs: "none", md: "flex" }, justifyContent: "center" }}>
-        <img src="/assets/hero-img.jpg" alt="hero__img" width="100%" />
+      <Box sx={{ width: "45%", height: "300px", display: { xs: "none", md: "flex" }, justifyContent: "center", position: "relative" }}>
+        <Image src="/assets/hero-img.jpg" alt="hero__img" fill={true} style={{ objectFit: "contain"}} />
       </Box>
     </Container>
   </section>

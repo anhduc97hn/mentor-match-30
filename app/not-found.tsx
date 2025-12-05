@@ -5,6 +5,7 @@ import MainFooter from '@/src/layout/MainFooter';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 // import Link from next/link} from "react-router-dom";
 import Link from 'next/link';
+import Image from 'next/image';
 
 // Define the component with React.FC (Functional Component) type
 const NotFoundPage: React.FC = () => {
@@ -35,13 +36,14 @@ const NotFoundPage: React.FC = () => {
               }}
             >
               
-              <img
+              <Image
                 alt="Under development"
                 src="/assets/error-404.png"
+                width={400}
                 style={{
                   display: 'inline-block',
                   maxWidth: '100%',
-                  width: 400
+                  // width: 400
                 }}
               />
             </Box>

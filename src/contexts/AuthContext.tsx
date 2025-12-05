@@ -199,7 +199,7 @@ function AuthProvider({ children, initialAuthState }: AuthProviderProps) {
   };
 
   const register = async ({ name, email, password, isMentor }: { name: string; email: string; password: string; isMentor: boolean }, callback: () => void): Promise<void> => {
-    const response = await apiService.post("/users/signup", {
+    const response = await apiService.post("/user/signup", {
       name,
       email,
       password,

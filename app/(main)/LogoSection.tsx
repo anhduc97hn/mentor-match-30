@@ -1,4 +1,5 @@
 import { Box, Container, Stack, Typography } from "@mui/material";
+import Image from "next/image";
 
 export const LogoSection = () => {
   const logos = [
@@ -10,14 +11,14 @@ export const LogoSection = () => {
     { src: "/assets/grab-logo.png", alt: "grab" },
   ];
   return (
-    <Container sx={{ display: "flex", flexDirection: "column", alignItems: "center", mt: 5, mb: 2 }}>
+    <Container sx={{ display: "flex", flexDirection: "column", alignItems: "center", mt: 2, mb: 2}}>
       <Typography variant="h5" sx={{ textAlign: "center", typography: { xs: "h6", md: "h5" } }}>
         Get instant access to startup mentors from amazing companies like:
       </Typography>
-      <Stack flexDirection="row" gap={3} alignItems="center" justifyContent="center">
+      <Stack flexDirection="row" alignItems="center" justifyContent="center" flexWrap="wrap">
         {logos.map((logo, index) => (
-          <Box key={index} sx={{ width: "15%", minWidth: "80px", height: "120px", display: "flex", alignItems: "center", justifyContent: "center" }}>
-            <img src={logo.src} alt={logo.alt} width="100%" />
+          <Box key={index} sx={{ width: { xs: "20%", sm: "15%" }, minWidth: "120px", height: "120px", display: "flex", alignItems: "center", justifyContent: "center", position: "relative" }}>
+            <Image src={logo.src} alt={logo.alt} fill={true} style={{ objectFit: "contain"}}  />
           </Box>
         ))}
       </Stack>

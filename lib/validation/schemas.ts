@@ -123,7 +123,9 @@ export const UpdateUserProfileSchema = z
 // Extended Schema: Use .extend() to create the GetSessionsQuerySchema
 export const GetSessionsQuerySchema = PaginationQuerySchema.extend({
   // Add the required 'status' field
-  status: UpdateSessionStatusSchema,
+  status: z.enum(["pending", "accepted", "declined", "completed", "cancelled", "reviewed"], {
+    error: "Invalid or missing status",
+  }),
 });
 
 export const GetUsersQuerySchema = z

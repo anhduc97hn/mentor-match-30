@@ -9,8 +9,8 @@ interface LogoProps {
 
 const Logo: React.FC<LogoProps> = ({ disabledLink = false, sx }) => {
   const logo = (
-    <Box sx={{ width: 40, height: 40, ...sx }}>
-      <img src="/logo.png" alt="logo" width="100%" />
+    <Box sx={{ width: 40, height: 40, position: "relative", ...sx }}>
+      <Image src="/logo.png" alt="logo" fill={true}  />
     </Box>
   );
 

@@ -16,6 +16,7 @@ import { HTTP_STATUS, ERROR_TYPES } from "@/lib/constants";
 // Zod schema for input validation
 import { LoginSchema } from "@/lib/validation/schemas"; 
 import { z } from "zod";
+import { revalidateTag } from "next/cache";
 
 // Define the handler logic, wrapped by catchAsync
 const loginHandler = async (req: ExtendedNextRequest): Promise<NextResponse> => {
@@ -51,6 +52,7 @@ const loginHandler = async (req: ExtendedNextRequest): Promise<NextResponse> => 
     // Get user profile and populate userId
     const userProfile = await UserProfile.findOne({ userId: user._id }).populate("userId");
 
+    revalidateTag(`user-profile-${user._id}`)
     // 3. Return Success Response (Replaces Express res.status().json())
     return sendResponse(
         HTTP_STATUS.OK,

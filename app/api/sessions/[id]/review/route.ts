@@ -8,6 +8,7 @@ import { AppError, catchAsync, sendResponse, ExtendedNextRequest, AppRouterConte
 import { HTTP_STATUS, ERROR_TYPES } from "@/lib/constants";
 import { chainMiddleware, customerAccessRequired, validate } from "@/lib/utils/api-middleware";
 import { ObjectIdParamSchema, CreateReviewSchema } from "@/lib/validation/schemas"; 
+import { revalidateTag } from "next/cache";
 
 // --- Helper Functions (Adapted from review.controller.js) ---
 
@@ -81,6 +82,8 @@ const createNewReviewHandler = async (
     // 4. Recalculate Metrics
     await calculateReviewCount(mentorProfileId);
     await calculateAverageRating(mentorProfileId);
+
+    revalidateTag(`mentor-reviews-${mentorProfileId}`)
 
     // 5. Return Success Response
     return sendResponse(
