@@ -98,7 +98,7 @@ const MainHeader: React.FC = () => {
 
         <Box sx={{ flexGrow: 1 }} />
 
-        <Button component={NextLink} href="/mentors" variant="contained" sx={{ mr: 2 }}>
+        <Button component={NextLink} href="/mentors" variant="contained" sx={{ mr: 2 }} prefetch={false}>
           Browse Mentors
         </Button>
 

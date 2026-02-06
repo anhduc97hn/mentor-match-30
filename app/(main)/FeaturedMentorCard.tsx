@@ -30,15 +30,16 @@ const FeaturedMentorCard: React.FC<Props> = ({ userProfile }) => {
           mt: 1,
           textAlign: "center",
           "&:hover": {
-            color: "primary.main", 
+            color: "primary.main",
           },
           transition: "color 0.3s ease",
         }}
+        prefetch={false}
       >
         {userProfile.name}
       </MUILink>
       <Typography
-        variant="body2" 
+        variant="body2"
         sx={{ color: "text.secondary", textAlign: "center" }}
       >
         {userProfile.currentPosition} at {userProfile.currentCompany}

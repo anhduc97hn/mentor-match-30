@@ -1,19 +1,17 @@
-"use client"; // Marks this as a client component
+"use client";
 
 import { Avatar, Button, Card, Link, Stack, Typography, SxProps, Theme } from "@mui/material";
 import React from "react";
 import RequestContent from "./RequestContent";
-import NextLink from "next/link"; // Use Next.js Link
+import NextLink from "next/link";
 import ActionButton from "./ActionButton";
 import SessionStatus from "./SessionStatus";
-// Assuming fDateTime and ReviewForm are available/converted
-import { fDateTime } from "@/src/utils/formatTime"; 
+import { fDateTime } from "@/src/utils/formatTime";
 import ReviewForm from "./ReviewForm";
 import ReviewsIcon from "@mui/icons-material/Reviews";
 import { Session } from "@/src/types/session";
 
 
-// Define the shape of the component's props
 interface SessionCardProps {
     currentUserProfileId: string;
     session: Session;
@@ -22,7 +20,7 @@ interface SessionCardProps {
 
 function SessionCard({ currentUserProfileId, session, prevStatus }: SessionCardProps) {
   const { status, from, to } = session;
-  
+
   const actionButton = (
     <ActionButton
       currentUserProfileId={currentUserProfileId}
@@ -30,7 +28,7 @@ function SessionCard({ currentUserProfileId, session, prevStatus }: SessionCardP
       prevStatus={prevStatus}
     />
   );
-  
+
   const sessionStatus = (
     <SessionStatus
       currentUserProfileId={currentUserProfileId}
@@ -40,8 +38,7 @@ function SessionCard({ currentUserProfileId, session, prevStatus }: SessionCardP
       sx={{ fontSize: "0.6rem" }}
     />
   );
-  
-  // Function to calculate the days until the session
+
   const getDaysUntilSession = (startDate: string) => {
     const now = new Date();
     const start = new Date(startDate);
@@ -50,7 +47,6 @@ function SessionCard({ currentUserProfileId, session, prevStatus }: SessionCardP
   };
   const daysUntilSession = getDaysUntilSession(session.startDateTime);
 
-  // Formate session date & time
   const fStartTime = fDateTime(session.startDateTime);
   const fEndTime = fDateTime(session.endDateTime);
 
