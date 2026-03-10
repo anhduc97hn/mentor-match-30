@@ -3,8 +3,7 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import { Alert, Box, Container, Pagination } from "@mui/material";
-import { useAppSelector, useAppDispatch } from "@/src/appService/hooks";
-import { getUserProfile } from "@/src/slices/userProfileSlice";
+import apiService from "@/src/appService/apiService";
 import LoadingScreen from "@/src/components/LoadingScreen";
 import MentorList from "./MentorList";
 import { MentorFilterBar } from "./FilterBar";
@@ -34,23 +33,18 @@ const defaultValues: FilterFormInputs = {
 };
 
 export default function BrowseMentorPage({ initialMentors, initialTotal, initialTotalPages }: BrowseMentorPageProps) {
-  const dispatch = useAppDispatch();
-  const { currentPageUsers, userProfilesById, isLoading, error, total, totalPages } = useAppSelector((state) => state.userProfile);
-
   // State
   const [page, setPage] = useState(1);
   const [filterParams, setFilterParams] = useState(defaultValues);
 
+  const [mentors, setMentors] = useState(initialMentors);
+  const [total, setTotal] = useState(initialTotal);
+  const [totalPages, setTotalPages] = useState(initialTotalPages);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
   // Form
   const methods = useForm<FilterFormInputs>({ defaultValues });
-
-  // Data Merging (Client Store vs Server Initial)
-  const clientMentors = currentPageUsers.map((userId) => userProfilesById[userId]);
-  const hasClientData = clientMentors.length > 0;
-
-  const mentors = hasClientData ? clientMentors : initialMentors;
-  const currentTotal = hasClientData ? total : initialTotal;
-  const currentTotalPages = hasClientData ? totalPages : initialTotalPages;
 
   // Filter Options Calculation
   const filterOptions = useMemo(() => {
@@ -85,8 +79,28 @@ export default function BrowseMentorPage({ initialMentors, initialTotal, initial
       isInitialMount.current = false;
       return;
     }
-    dispatch(getUserProfile({ filter: filterParams, page }));
-  }, [dispatch, filterParams, page]);
+    const fetchData = async () => {
+      setIsLoading(true);
+      try {
+        const params = new URLSearchParams();
+        params.append("page", page.toString());
+        Object.entries(filterParams).forEach(([key, value]) => {
+          if (value) params.append(key, value);
+        });
+        const response = await apiService.get(`/userprofiles/?${params.toString()}`);
+          setTotal(response.data?.count || 0);
+          setTotalPages(response.data?.totalPages || 0);
+          setMentors(response.data?.userProfiles || []);
+          setIsLoading(false);
+      } catch (error: any) {
+        setError(error.message || "Failed to fetch data");
+      }
+      finally {
+        setIsLoading(false);
+      }
+    };
+    fetchData();
+  }, [filterParams, page]);
 
   return (
     <section className="mentorlist-page">
@@ -105,12 +119,12 @@ export default function BrowseMentorPage({ initialMentors, initialTotal, initial
           <LoadingScreen sx={{ top: 0, left: 0 }} />
         ) : (
           <>
-            <MentorFilterBar methods={methods} onSubmit={handleSearch} onReset={handleReset} options={filterOptions} resultCount={currentTotal} />
+            <MentorFilterBar methods={methods} onSubmit={handleSearch} onReset={handleReset} options={filterOptions} resultCount={total} />
 
             <Box sx={{ position: "relative" }}>{error ? <Alert severity="error">{error}</Alert> : <MentorList mentors={mentors} />}</Box>
 
             <Box sx={{ mt: 2, display: "flex", justifyContent: "center" }}>
-              <Pagination count={currentTotalPages} page={page} onChange={handlePageChange} />
+              <Pagination count={totalPages} page={page} onChange={handlePageChange} />
             </Box>
           </>
         )}
