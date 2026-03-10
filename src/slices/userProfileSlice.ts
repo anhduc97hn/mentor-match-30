@@ -101,7 +101,7 @@ const slice = createSlice({
   },
 });
 
-export const { startLoading, hasError, updateUserProfileSuccess, getUserProfileSuccess, getUserProfileFeaturedSuccess, getSingleUserProfileSuccess } = slice.actions;
+export const { startLoading, hasError, updateUserProfileSuccess, getUserProfileSuccess,getUserProfileFeaturedSuccess, getSingleUserProfileSuccess } = slice.actions;
 
 export default slice.reducer;
 
@@ -129,7 +129,7 @@ export const updateUserProfile = (params: UpdateUserProfileParams) => async (dis
       const imageUrl = await cloudinaryUpload(avatarUrl);
       data.avatarUrl = imageUrl;
     }
-    
+
     const response = await apiService.put(`/userprofiles/me`, data);
     dispatch(slice.actions.updateUserProfileSuccess(response.data));
     toast.success('Update Profile successfully');
@@ -145,11 +145,15 @@ export const getUserProfile =
     dispatch(slice.actions.startLoading());
     try {
       const { page, limit, filter } = params;
-      const requestParams: any = { page, limit };
+      const queryParams = new URLSearchParams();
+      if (page) queryParams.append('page', page.toString());
+      if (limit) queryParams.append('limit', limit.toString());
       if (filter) {
-        requestParams.filter = filter;
+        Object.entries(filter).forEach(([key, value]) => {
+          if (value !== undefined && value !== null) queryParams.append(key, String(value));
+        });
       }
-      const response = await apiService.get(`/userprofiles/`, { params: requestParams });
+      const response = await apiService.get(`/userprofiles/?${queryParams.toString()}`);
       dispatch(slice.actions.getUserProfileSuccess(response.data));
     } catch (error: any) {
       dispatch(slice.actions.hasError(error.message));

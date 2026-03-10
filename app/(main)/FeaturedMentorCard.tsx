@@ -34,7 +34,6 @@ const FeaturedMentorCard: React.FC<Props> = ({ userProfile }) => {
           },
           transition: "color 0.3s ease",
         }}
-        prefetch={false}
       >
         {userProfile.name}
       </MUILink>

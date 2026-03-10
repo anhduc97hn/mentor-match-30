@@ -6,7 +6,7 @@ import { Container, Typography } from "@mui/material";
 import { CtaSection } from "./CtaSection";
 import { StatsSection } from "./StatsSection";
 import FeaturedMentorList from "./FeaturedMentorList";
-import "./HomePage.css"; 
+import "./HomePage.css";
 
 export default async function HomePage() {
   return (
