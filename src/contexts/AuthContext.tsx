@@ -150,10 +150,6 @@ function AuthProvider({ children, initialAuthState }: AuthProviderProps) {
       const { userProfile, accessToken } = response.data;
 
       setSession(accessToken, remember);
-      dispatch({
-        type: LOGIN_SUCCESS,
-        payload: { userProfile },
-      });
       callback();
     } catch (err: any) {
       toast.error(err.errors.message);
@@ -165,10 +161,6 @@ function AuthProvider({ children, initialAuthState }: AuthProviderProps) {
       const response = await apiService.post("/auth/googlelogin", { idToken: idToken });
       const { userProfile, accessToken } = response.data;
       setSession(accessToken);
-      dispatch({
-        type: LOGIN_SUCCESS,
-        payload: { userProfile },
-      });
       callback();
     } catch (e: any) {
       toast.error(e.errors.message);

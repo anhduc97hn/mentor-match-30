@@ -20,18 +20,16 @@ export async function getCachedUser(userId: string) {
       const rawUserProfile = await UserProfileModel.findOne({ userId })
         .populate("userId", null, User)
         .lean();
-      
+
       if (!rawUserProfile) return null;
       return JSON.parse(JSON.stringify(rawUserProfile));
     },
-    ['layout-user-profile'], 
-    { 
-      tags: [`user-profile-${userId}`], 
-      revalidate: 3600 
-    } 
+    ['layout-user-profile'],
+    {
+      tags: [`user-profile-${userId}`],
+      revalidate: 3600
+    }
   );
-
-  // Execute the cached function immediately
   return await cachedFn();
 }
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
@@ -46,11 +44,6 @@ export default async function RootLayout({ children }: { children: React.ReactNo
     try {
       const payload = verifyToken(token);
       isAuthenticated = true;
-      // await dbConnect();
-      // const rawUserProfile = await UserProfileModel.findOne({ userId: payload._id }).populate("userId", null, User).lean();
-      // if (rawUserProfile) {
-      //   initialUser = JSON.parse(JSON.stringify(rawUserProfile));
-      // }
       initialUser = await getCachedUser(payload._id);
     } catch (error) {
       console.error("Layout Auth Error:", error);
@@ -61,8 +54,10 @@ export default async function RootLayout({ children }: { children: React.ReactNo
   return (
     <html lang="en">
       <body>
-        <Providers initialAuthState={{ userProfile: initialUser, isAuthenticated, isInitialized }}>{children}</Providers>
+        <Providers initialAuthState={{ userProfile: initialUser, isAuthenticated, isInitialized }}>
+          {children}
+        </Providers>
       </body>
     </html>
-  );
+  )
 }

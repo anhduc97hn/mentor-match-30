@@ -52,7 +52,7 @@ const LoginPage = () => {
 
     try {
       await auth.login({ email, password, remember }, () => {
-        router.push(from);
+        window.location.href = from;
       });
     } catch (error: any) {
       reset();
@@ -71,16 +71,16 @@ const LoginPage = () => {
     }
     try {
       await auth.loginWithGoogle(credential, () => {
-        router.push(from);
+        window.location.href = from;
       });
     } catch (error) {
       console.log("handleGoogleResponse", error);
     }
   };
 
-  const handleGoogleClick = () => {
-    router.prefetch(from)
-  }
+  // const handleGoogleClick = () => {
+  //   router.prefetch(from)
+  // }
 
   useEffect(() => {
     const reason = searchParams.get("reason");
@@ -146,7 +146,6 @@ const LoginPage = () => {
             console.log("Login Failed");
           }}
           shape="pill"
-          click_listener={handleGoogleClick}
         />
       </Box>
     </Container>
