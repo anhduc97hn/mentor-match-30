@@ -125,7 +125,7 @@ const createResourceSlice = <T extends IDocument, N extends string>(resource: N)
     async (dispatch) => {
       dispatch(actions.startLoading());
       try {
-        const response = await apiService.get(`/${resource}s`, {
+        const response = await apiService.get(`/${resource}`, {
           params: options,
         });
         if (options.page === 1) dispatch(actions.reset());
@@ -142,7 +142,7 @@ const createResourceSlice = <T extends IDocument, N extends string>(resource: N)
     async (dispatch) => {
       dispatch(actions.startLoading());
       try {
-        const response = await apiService.post(`/${resource}s`, data);
+        const response = await apiService.post(`/${resource}`, data);
         dispatch(actions.createSuccess(response.data));
         toast.success(`Create ${resource} successfully`);
         dispatch(getCurrentUserProfile());
@@ -158,7 +158,7 @@ const createResourceSlice = <T extends IDocument, N extends string>(resource: N)
     async (dispatch) => {
       dispatch(actions.startLoading());
       try {
-        const response = await apiService.delete(`/${resource}s/${itemId}`);
+        const response = await apiService.delete(`/${resource}/${itemId}`);
         dispatch(actions.deleteSuccess(response.data));
         toast.success(`${resource} deleted!`);
         dispatch(getCurrentUserProfile());
@@ -174,7 +174,7 @@ const createResourceSlice = <T extends IDocument, N extends string>(resource: N)
     async (dispatch) => {
       dispatch(actions.startLoading());
       try {
-        const response = await apiService.put(`/${resource}s/${itemId}`, data);
+        const response = await apiService.put(`/${resource}/${itemId}`, data);
         dispatch(actions.editSuccess(response.data));
         toast.success(`${resource} edited!`);
       } catch (error: any) {

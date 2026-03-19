@@ -1,27 +1,6 @@
-import { ActionCreatorWithoutPayload, ActionCreatorWithPayload, Slice } from "@reduxjs/toolkit";
-import { AppThunk } from "../appService/store";
 import createResourceSlice from "./createResourceSlice";
 import { Education, Experience, Certification } from "../types/user";
 
-// A generic interface for the structure returned by createResourceSlice<T>
-// interface ResourceSliceResult<T> {
-//   reducer: ReturnType<Slice["reducer"]>;
-//   actions: {
-//     startLoading: ActionCreatorWithoutPayload<string>;
-//     hasError: ActionCreatorWithPayload<string, string>;
-//     reset: ActionCreatorWithoutPayload<string>;
-//     getAllSuccess: ActionCreatorWithPayload<any, string>; // Using 'any' due to the dynamic key, though a better type could be defined
-//     createSuccess: ActionCreatorWithPayload<T, string>;
-//     deleteSuccess: ActionCreatorWithPayload<T, string>;
-//     editSuccess: ActionCreatorWithPayload<T, string>;
-//     getAll: (options?: { page: number; limit: number }) => AppThunk;
-//     create: (data: T) => AppThunk;
-//     remove: (itemId: string) => AppThunk;
-//     update: ({ itemId, data }: { itemId: string; data: T }) => AppThunk;
-//   };
-// }
-
-// Now we can use the typed function to create our slices
 const educationSlice = createResourceSlice<Education, "education">("education");
 const experienceSlice = createResourceSlice<Experience, "experience">("experience");
 const certificationSlice = createResourceSlice<Certification, "certification">("certification");

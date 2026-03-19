@@ -127,7 +127,7 @@ export const getRequestsSent =
       const { filterName, page = 1, limit = 10 } = params;
       const requestParams: any = { page, limit };
       if (filterName) requestParams.name = filterName;
-      const response = await apiService.get("/sessions/requests/outgoing", {
+      const response = await apiService.get("/sessions/request/outgoing", {
         params: requestParams,
       });
       dispatch(slice.actions.getSessionRequestsSuccess(response.data));
@@ -145,7 +145,7 @@ export const getRequestsReceived =
       const { filterName, page = 1, limit = 10 } = params;
       const requestParams: any = { page, limit };
       if (filterName) requestParams.name = filterName;
-      const response = await apiService.get("/sessions/requests/incoming", {
+      const response = await apiService.get("/sessions/request/incoming", {
         params: requestParams,
       });
       dispatch(slice.actions.getSessionRequestsSuccess(response.data));
@@ -179,7 +179,7 @@ export const sendSessionRequest =
     try {
       const { userProfileId, data } = params;
       const response = await apiService.post(
-        `/sessions/requests/${userProfileId}`,
+        `/sessions/request/${userProfileId}`,
         data
       );
       dispatch(slice.actions.sendSessionRequestSuccess(response.data));
@@ -193,7 +193,7 @@ export const sendSessionRequest =
 export const declineRequest = (sessionId: string) : AppThunk => async (dispatch) => {
   dispatch(slice.actions.startLoading());
   try {
-    const response = await apiService.put(`/sessions/requests/${sessionId}`, {
+    const response = await apiService.put(`/sessions/request/${sessionId}`, {
       status: "declined",
     });
     dispatch(
@@ -210,7 +210,7 @@ export const declineRequest = (sessionId: string) : AppThunk => async (dispatch)
 export const acceptRequest = (sessionId: string) : AppThunk => async (dispatch) => {
   dispatch(slice.actions.startLoading());
   try {
-    const response = await apiService.put(`/sessions/requests/${sessionId}`, {
+    const response = await apiService.put(`/sessions/request/${sessionId}`, {
       status: "accepted",
     });
     dispatch(
@@ -227,7 +227,7 @@ export const acceptRequest = (sessionId: string) : AppThunk => async (dispatch) 
 export const cancelRequest = (sessionId: string) : AppThunk => async (dispatch) => {
   dispatch(slice.actions.startLoading());
   try {
-    const response = await apiService.put(`/sessions/requests/${sessionId}`, {
+    const response = await apiService.put(`/sessions/request/${sessionId}`, {
       status: "cancelled",
     });
     dispatch(
@@ -244,7 +244,7 @@ export const cancelRequest = (sessionId: string) : AppThunk => async (dispatch) 
 export const completeSession = (sessionId: string) : AppThunk => async (dispatch) => {
   dispatch(slice.actions.startLoading());
   try {
-    const response = await apiService.put(`/sessions/requests/${sessionId}`, {
+    const response = await apiService.put(`/sessions/request/${sessionId}`, {
       status: "completed",
     });
     dispatch(

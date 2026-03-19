@@ -6,10 +6,10 @@ import { AppError, sendResponse } from "./lib/utils/helper";
 
 const PROTECTED_API_PATTERNS = [
   { regex: /^\/api\/userprofiles\/me$/, methods: ["GET", "PUT"] },
-  { regex: /^\/api\/certifications(?:\/[^/]+)?$/, methods: ["POST", "GET", "PUT", "DELETE"] },
-  { regex: /^\/api\/educations(?:\/[^/]+)?$/, methods: ["POST", "GET", "PUT", "DELETE"] },
-  { regex: /^\/api\/experiences(?:\/[^/]+)?$/, methods: ["POST", "GET", "PUT", "DELETE"] },
-  { regex: /^\/api\/reviews\/[^/]+$/, methods: ["GET"] },
+  { regex: /^\/api\/certification(?:\/[^/]+)?$/, methods: ["POST", "GET", "PUT", "DELETE"] },
+  { regex: /^\/api\/education(?:\/[^/]+)?$/, methods: ["POST", "GET", "PUT", "DELETE"] },
+  { regex: /^\/api\/experience(?:\/[^/]+)?$/, methods: ["POST", "GET", "PUT", "DELETE"] },
+  { regex: /^\/api\/review\/[^/]+$/, methods: ["GET"] },
   { regex: /^\/api\/sessions(?:\/.*)?$/, methods: ["POST", "GET", "PUT"] },
 ];
 
@@ -17,12 +17,6 @@ function shouldProtectApi(pathname: string, method: string): boolean {
   if (pathname === "/api/sessions/google/redirect" && method === "GET") return false;
   return PROTECTED_API_PATTERNS.some((pattern) => pattern.regex.test(pathname) && pattern.methods.includes(method));
 }
-
-// function shouldProtectPage(pathname: string): boolean {
-//   if (pathname.startsWith('/account')) return true;
-//   if (pathname.startsWith('/mentors') && pathname.includes('/session')) return true;
-//   return false;
-// }
 
 export default function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
@@ -61,12 +55,12 @@ export default function middleware(request: NextRequest) {
 export const config = {
   runtime: "nodejs",
   matcher: [
-    "/api/userprofiles/me", 
-    "/api/certifications/:path*", 
-    "/api/educations/:path*", 
-    "/api/experiences/:path*", 
-    "/api/reviews/:reviewId", 
-    "/api/sessions/:path*", 
-    "/account/:path*", 
+    "/api/userprofiles/me",
+    "/api/certification/:path*",
+    "/api/education/:path*",
+    "/api/experience/:path*",
+    "/api/review/:reviewId",
+    "/api/sessions/:path*",
+    "/account/:path*",
     "/mentors/:path*/session"],
 };
