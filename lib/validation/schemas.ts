@@ -37,7 +37,8 @@ export const ResetPasswordSchema = z.object({
 export const CreateCertiSchema = z.object({
   name: z.string().min(1, "Invalid name"),
   description: z.string().min(1, "Invalid description"),
-  url: z.string().url("Invalid URL").optional().or(z.literal("")),
+ // url: z.string().optional(),
+   url: z.url("Invalid URL").optional().or(z.literal("")),
 });
 
 // POST /educations
@@ -70,8 +71,8 @@ export const CreateExpSchema = z.object({
 export const SendSessionRequestSchema = z.object({
   topic: z.string().min(1, "missing topic"),
   problem: z.string().min(1, "missing problem"),
-  startDateTime: z.iso.date("missing or invalid startDateTime"),
-  endDateTime: z.iso.date("missing or invalid endDateTime"),
+  startDateTime: z.iso.datetime("missing or invalid startDateTime"),
+  endDateTime: z.iso.datetime("missing or invalid endDateTime"),
 });
 
 // POST /sessions/:sessionId/reviews
@@ -108,7 +109,7 @@ export const UpdateUserProfileSchema = z
   .object({
     // These fields correspond to the original 'allows' array in userProfile.controller.js
     name: z.string().optional(),
-    avatarUrl: z.url("Invalid URL format for avatarUrl").optional(),
+    avatarUrl: z.string().optional(),
     aboutMe: z.string().optional(),
     city: z.string().optional(),
     facebookLink: z.url("Invalid URL format for Facebook").optional(),
