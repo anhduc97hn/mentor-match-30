@@ -125,13 +125,13 @@ export const createReview =
     dispatch(slice.actions.startLoading());
     try {
       const { sessionId, content, rating, prevStatus } = params;
-      const response = await apiService.post(`/sessions/${sessionId}/reviews`, {
+      const response = await apiService.post(`/sessions/${sessionId}/review`, {
         content,
         rating,
       });
       dispatch(slice.actions.createReviewSuccess(response.data));
       if (prevStatus) {
-        dispatch(getSessions({ prevStatus }));
+        dispatch(getSessions({ status: prevStatus }));
       }
       toast.success('create review successfully!');
     } catch (error: any) {

@@ -160,10 +160,10 @@ export const getSessions =
   async (dispatch) => {
     dispatch(slice.actions.startLoading());
     try {
-      const { status, page = 1, limit = 10 } = params;
-      const requestParams: any = { status, page, limit };
+      // const { prevStatus, status, page = 1, limit = 10 } = params;
+      // const requestParams: any = { status, page, limit };
       const response = await apiService.get("/sessions", {
-        params: requestParams,
+        params
       });
       dispatch(slice.actions.getSessionRequestsSuccess(response.data));
     } catch (error: any) {

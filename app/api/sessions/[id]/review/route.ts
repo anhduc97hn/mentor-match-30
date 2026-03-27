@@ -4,10 +4,10 @@ import { z } from "zod";
 import Session from "@/models/Session";
 import Review from "@/models/Review";
 import UserProfile from "@/models/UserProfile";
-import { AppError, catchAsync, sendResponse, ExtendedNextRequest, AppRouterContext } from "@/lib/utils/helper"; 
+import { AppError, catchAsync, sendResponse, ExtendedNextRequest, AppRouterContext } from "@/lib/utils/helper";
 import { HTTP_STATUS, ERROR_TYPES } from "@/lib/constants";
 import { chainMiddleware, customerAccessRequired, validate } from "@/lib/utils/api-middleware";
-import { ObjectIdParamSchema, CreateReviewSchema } from "@/lib/validation/schemas"; 
+import { ObjectIdParamSchema, CreateReviewSchema } from "@/lib/validation/schemas";
 import { revalidateTag } from "next/cache";
 
 // --- Helper Functions (Adapted from review.controller.js) ---
@@ -40,21 +40,21 @@ const calculateAverageRating = async (userProfileId: string) => {
         const ratings = reviews.map((review) => review.rating);
         reviewAverageRating = ratings.reduce((acc, rating) => acc + rating, 0) / ratings.length;
     }
-    
-    // Save to DB 
+
+    // Save to DB
     await UserProfile.findByIdAndUpdate(userProfileId, {
         reviewAverageRating: reviewAverageRating,
     });
 };
 
-type SessionReviewParams = { 
-  id: string 
+type SessionReviewParams = {
+  id: string
 };
 const createNewReviewHandler = async (
     req: ExtendedNextRequest,
     context: AppRouterContext<SessionReviewParams>
 ): Promise<NextResponse> => {
-    
+
     // 1. Inputs are guaranteed by chainMiddleware:
     const validatedParams = await context.params;
     const validatedBody = req.validatedBody;
@@ -64,11 +64,11 @@ const createNewReviewHandler = async (
 
     // 2. Update Session Status (and retrieve original session data)
     const session = await Session.findByIdAndUpdate(id, { status: "reviewed" });
-    
+
     if (!session) {
         throw new AppError(HTTP_STATUS.NOT_FOUND, "Session not found", ERROR_TYPES.NOT_FOUND);
     }
-    
+
     // 3. Create Review
     const review = await Review.create({
         session: id,
@@ -84,6 +84,7 @@ const createNewReviewHandler = async (
     await calculateAverageRating(mentorProfileId);
 
     revalidateTag(`mentor-reviews-${mentorProfileId}`)
+    revalidateTag(`mentor-profile-${mentorProfileId}`)
 
     // 5. Return Success Response
     return sendResponse(
@@ -99,11 +100,11 @@ const createNewReviewHandler = async (
 const postMiddlewares = [
     // 1. Authorization: Only customers can review
     customerAccessRequired,
-    
+
     // 2. Validation: Param (sessionId) and Body (content, rating)
-    validate({ 
+    validate({
         // Note: Param validation happens in the main handler function via Zod parsing context.params
-        body: CreateReviewSchema 
+        body: CreateReviewSchema
     }),
 ];
 
@@ -111,7 +112,7 @@ const postMiddlewares = [
 export const POST = catchAsync(async (req, context) => {
     // 1. Parameter Validation (Must run first for dynamic routes)
     ObjectIdParamSchema.parse(context.params);
-    
+
     // 2. Execute Middleware Chain and Final Handler
     return chainMiddleware(postMiddlewares, createNewReviewHandler)(req, context);
 });
