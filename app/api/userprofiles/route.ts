@@ -63,9 +63,9 @@ const getUsersHandler = async (req: ExtendedNextRequest): Promise<NextResponse> 
 
   // 5. Database Query and Population
   const userProfiles = await UserProfile.find(filterCrireria)
-  .populate("education", null, Education)
-  .populate("experiences", null, Experience)
-  .populate("certifications", null, Certification)
+  .populate({ path: "education", match: { isDeleted: false }, model: Education })
+  .populate({ path: "experiences", match: { isDeleted: false }, model: Experience })
+  .populate({ path: "certifications", match: { isDeleted: false }, model: Certification })
   .sort(sortOptions).skip(offset).limit(limit);
 
   // 6. Return Response
