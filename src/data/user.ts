@@ -119,7 +119,9 @@ export async function getUserProfilesServer(page = 1, limit = 10): Promise<UserP
         
         const [rawUserProfiles, count] = await Promise.all([
           UserProfileModel.find({ isMentor: true })
-            .populate("education").populate("experiences").populate("certifications")
+            .populate({ path: "education", match: { isDeleted: false }, model: Education })
+            .populate({ path: "experiences", match: { isDeleted: false }, model: Experience })
+            .populate({ path: "certifications", match: { isDeleted: false }, model: Certification })
             .sort({ reviewAverageRating: -1 })
             .skip(skip)
             .limit(l)
@@ -184,9 +186,9 @@ export async function getMentorProfileServer(mentorId: string): Promise<IMentorP
         console.log("🔴 CACHE MISS: Fetching from MongoDB...");
         await dbConnect();
         const rawUserProfile = await UserProfileModel.findById(id)
-          .populate("education", null, Education)
-          .populate("experiences", null, Experience)
-          .populate("certifications", null, Certification)
+          .populate({ path: "education", match: { isDeleted: false }, model: Education })
+          .populate({ path: "experiences", match: { isDeleted: false }, model: Experience })
+          .populate({ path: "certifications", match: { isDeleted: false }, model: Certification })
           .lean();
 
         if (!rawUserProfile) return null;
