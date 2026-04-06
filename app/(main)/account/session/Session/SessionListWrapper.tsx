@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { getSessions, updateSessionStatus } from '@/src/slices/sessionSlice';
 import SessionList from './SessionList';
 import { UserProfile } from '@/src/types/user';
@@ -27,29 +27,30 @@ export default function SessionListWrapper({
   const { currentPageSessions, sessionsById, isLoading, error, total, totalPages } = useAppSelector(state => state.session);
 
   const sessions = currentPageSessions.map(sessionId => sessionsById[sessionId]);
-  // Logic to check and update session status (moved from SessionUpcoming)
-  const checkAndUpdateSessionStatus = (session: Session) => {
-    const currentTime = new Date();
-    const sessionEndTime = new Date(session.endDateTime);
 
-    if (currentTime >= sessionEndTime) {
-      dispatch(updateSessionStatus({ sessionId: session._id, status: 'completed', prevStatus: 'accepted' }));
-    }
-  };
+  // Track which sessions have already been dispatched to prevent re-dispatching on re-renders
+  const dispatchedSessionsRef = useRef<Set<string>>(new Set());
+
   // Primary data fetching effect, dependent on status and page
   useEffect(() => {
     // Only fetch data when 'page' or 'status' changes
     dispatch(getSessions({ status, page }));
   }, [dispatch, status, page]);
 
-  // NEW: Conditional Side Effect for status checking
+  // Conditional side effect for status checking
   useEffect(() => {
-    if (enableStatusCheck) {
-      sessions.forEach(session => {
-        checkAndUpdateSessionStatus(session);
-      });
-    }
-    // Dependency array includes sessions, dispatch, and the flag
+    if (!enableStatusCheck) return;
+
+    const currentTime = new Date();
+    sessions.forEach(session => {
+      if (dispatchedSessionsRef.current.has(session._id)) return;
+
+      const sessionEndTime = new Date(session.endDateTime);
+      if (currentTime >= sessionEndTime) {
+        dispatchedSessionsRef.current.add(session._id);
+        dispatch(updateSessionStatus({ sessionId: session._id, status: 'completed', prevStatus: 'accepted' }));
+      }
+    });
   }, [sessions, dispatch, enableStatusCheck]);
 
   return (
