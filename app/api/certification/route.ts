@@ -5,7 +5,7 @@ import UserProfile from "@/models/UserProfile";
 import { AppError, catchAsync, sendResponse, ExtendedNextRequest } from "@/lib/utils/helper";
 import { HTTP_STATUS, ERROR_TYPES } from "@/lib/constants";
 import { chainMiddleware, mentorAccessRequired, validate } from "@/lib/utils/api-middleware";
-import { PaginationQuerySchema, CreateCertiSchema } from "@/lib/validation/schemas";
+import { PaginationQuerySchema, CreateCertiSchema, ObjectIdParamSchema } from "@/lib/validation/schemas";
 import { z } from "zod";
 import { revalidateTag } from "next/cache";
 
@@ -72,7 +72,8 @@ const createCertiHandler = async (req: ExtendedNextRequest): Promise<NextRespons
   currentUserProfile.certifications.push(newCertification._id)
   await currentUserProfile.save()
 
-  revalidateTag(`mentor-profile-${currentUserProfile._id}`)
+  revalidateTag(`mentor-profile-${currentUserProfile._id.toString()}`)
+  revalidateTag('mentors')
   // 5. Return Success Response
   return sendResponse(
     HTTP_STATUS.OK,
@@ -82,6 +83,8 @@ const createCertiHandler = async (req: ExtendedNextRequest): Promise<NextRespons
     'Certification created successfully',
   )
 }
+
+
 
 // --- Middleware Chain Setup ---
 const getMiddlewares = [
@@ -115,3 +118,5 @@ export const POST = catchAsync(async (req, context) => {
     // The body validation is executed before the handler runs
     return chainMiddleware(postMiddlewares, createCertiHandler)(req, context);
 });
+
+
